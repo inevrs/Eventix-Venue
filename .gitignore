@@ -1,0 +1,15 @@
+# Database
+*.sqlite
+*.db
+
+# Uploads
+uploads/venues/*
+uploads/profiles/*
+!uploads/venues/.gitkeep
+!uploads/profiles/.gitkeep
+
+# IDEs and OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

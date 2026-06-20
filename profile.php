@@ -11,7 +11,6 @@ $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $bio = mysqli_real_escape_string($connect, $_POST['bio']);
     
-    // Handle file upload
     $profile_picture = null;
     if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] === UPLOAD_ERR_OK) {
         $upload_dir = 'uploads/profiles/';
@@ -48,11 +47,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Fetch current user data
 $query = mysqli_query($connect, "SELECT * FROM users WHERE id=$user_id");
 $user = mysqli_fetch_assoc($query);
 
-// Sync session with DB (in case they logged in before the column was added)
 if (!isset($_SESSION['profile_picture'])) {
     $_SESSION['profile_picture'] = $user['profile_picture'];
 }
@@ -63,59 +60,60 @@ if (!isset($_SESSION['profile_picture'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Profile — Eventix</title>
-    <link rel="stylesheet" href="/eventix/css/style.css">
+    <?php include 'includes/header_scripts.php'; ?>
 </head>
-<body>
+<body class="text-text font-sans antialiased min-h-screen">
 
 <?php include 'includes/navbar.php'; ?>
 
-<div class="page-wrapper">
-    <div class="page-header">
-        <h1>My Profile</h1>
-        <p>Manage your public profile and details</p>
+<div class="max-w-[1200px] mx-auto px-6 py-10 mt-24">
+    <div class="mb-10" data-aos="fade-down">
+        <h1 class="font-[Playfair_Display] text-4xl text-pink-dark mb-2">My Profile</h1>
+        <p class="text-text-muted text-sm">Manage your public profile and details</p>
     </div>
 
-    <div class="profile-wrap">
-        <div class="profile-avatar-sec">
-            <div class="profile-avatar-large">
+    <div class="flex flex-col md:flex-row gap-10 max-w-[900px] mx-auto items-start">
+        <div class="w-full md:w-60 text-center shrink-0" data-aos="fade-right" data-aos-delay="100">
+            <div class="w-44 h-44 rounded-full bg-pink-light text-pink-dark mx-auto mb-6 overflow-hidden flex items-center justify-center text-5xl font-semibold shadow-inner border-4 border-white">
                 <?php if ($user['profile_picture']): ?>
-                    <img src="/eventix/<?= htmlspecialchars($user['profile_picture']) ?>" alt="Avatar">
+                    <img src="/eventix/<?= htmlspecialchars($user['profile_picture']) ?>" alt="Avatar" class="w-full h-full object-cover">
                 <?php else: ?>
                     <?= strtoupper(substr($user['full_name'], 0, 1)) ?>
                 <?php endif; ?>
             </div>
-            <h3 style="font-size: 20px; margin-bottom: 4px;"><?= htmlspecialchars($user['full_name']) ?></h3>
-            <p style="color: var(--text-muted); font-size: 14px; text-transform: uppercase; letter-spacing: 1px; font-weight: 500;"><?= htmlspecialchars($user['role']) ?></p>
+            <h3 class="font-sans text-xl font-semibold text-text mb-1"><?= htmlspecialchars($user['full_name']) ?></h3>
+            <p class="text-pink-main text-xs uppercase tracking-widest font-bold"><?= htmlspecialchars($user['role']) ?></p>
         </div>
         
-        <div class="profile-details-sec card">
-            <h2 class="section-title" style="margin-bottom: 24px; font-size: 20px;">Edit Details</h2>
+        <div class="flex-1 bg-white border border-gray-100 rounded-2xl  p-8 shadow-soft" data-aos="fade-left" data-aos-delay="200">
+            <h2 class="font-[Playfair_Display] text-2xl text-pink-dark mb-6">Edit Details</h2>
             
-            <?php if ($error): ?><div class="alert alert-error"><?= $error ?></div><?php endif; ?>
-            <?php if ($success): ?><div class="alert alert-success"><?= $success ?></div><?php endif; ?>
+            <?php if ($error): ?><div class="bg-red-50 text-red-600 px-4 py-3 rounded-lg text-sm mb-6"><?= $error ?></div><?php endif; ?>
+            <?php if ($success): ?><div class="bg-green-50 text-green-700 px-4 py-3 rounded-lg text-sm mb-6"><?= $success ?></div><?php endif; ?>
 
             <form method="POST" enctype="multipart/form-data">
-                <div class="form-group">
-                    <label>Profile Picture</label>
-                    <input type="file" name="profile_picture" accept="image/*" style="padding: 10px;">
-                    <small style="color: var(--text-muted); display: block; margin-top: 6px;">Leave blank if you don't want to change it.</small>
+                <div class="mb-5">
+                    <label class="block text-[11px] font-semibold tracking-wider uppercase text-text-muted mb-2">Profile Picture</label>
+                    <input type="file" name="profile_picture" accept="image/*" class="w-full px-4 py-2 border border-gray-200 rounded-xl text-sm font-sans text-text transition-colors focus:border-pink-main focus:bg-pink-50/30 outline-none file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-pink-light file:text-pink-dark hover:file:bg-pink-main hover:file:text-white cursor-pointer">
+                    <small class="text-text-muted block mt-2 text-xs">Leave blank if you don't want to change it.</small>
                 </div>
                 
-                <div class="form-group">
-                    <label>Bio</label>
-                    <textarea name="bio" rows="5" placeholder="Tell us a little about yourself..."><?= htmlspecialchars($user['bio'] ?? '') ?></textarea>
+                <div class="mb-5">
+                    <label class="block text-[11px] font-semibold tracking-wider uppercase text-text-muted mb-2">Bio</label>
+                    <textarea name="bio" rows="5" placeholder="Tell us a little about yourself..." class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm font-sans text-text transition-colors focus:border-pink-main focus:bg-pink-50/30 outline-none resize-y"><?= htmlspecialchars($user['bio'] ?? '') ?></textarea>
                 </div>
                 
-                <div class="form-group">
-                    <label>Email Address</label>
-                    <input type="text" value="<?= htmlspecialchars($user['email']) ?>" disabled style="background: var(--gray-bg); color: var(--text-muted); cursor: not-allowed;">
+                <div class="mb-8">
+                    <label class="block text-[11px] font-semibold tracking-wider uppercase text-text-muted mb-2">Email Address</label>
+                    <input type="text" value="<?= htmlspecialchars($user['email']) ?>" disabled class="w-full px-4 py-3 border-[1.5px] border-gray-200 bg-gray-50 rounded-xl text-sm font-sans text-text-muted cursor-not-allowed">
                 </div>
                 
-                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <button type="submit" class="bg-pink-main text-white px-8 py-3 rounded-full font-semibold text-sm hover:bg-pink-dark transition-all transform hover:-translate-y-px active:scale-95 shadow-md hover:shadow-lg active:scale-95 transition-all">Save Changes</button>
             </form>
         </div>
     </div>
 </div>
 
+<?php include 'includes/footer_scripts.php'; ?>
 </body>
 </html>

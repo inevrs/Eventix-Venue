@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['name']    = $user['full_name'];
         $_SESSION['role']    = $user['role'];
 
-        $_SESSION['profile_picture'] = $user['profile_picture'] ?? null; // Added support for profile picture
+        $_SESSION['profile_picture'] = $user['profile_picture'] ?? null; 
 
         $redirect = $_GET['redirect'] ?? '';
         if ($redirect && strpos($redirect, 'venue.php') === 0) {
@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             if ($user['role'] === 'admin')   header("Location: /eventix/admin/dashboard.php");
             if ($user['role'] === 'manager') header("Location: /eventix/manager/dashboard.php");
-            if ($user['role'] === 'customer') header("Location: /eventix/customer/home.php");
+            if ($user['role'] === 'customer') header("Location: /eventix/index.php");
         }
         exit();
     } else {
@@ -50,66 +50,86 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign In — Eventix</title>
-    <link rel="stylesheet" href="/eventix/css/style.css">
-    <link rel="stylesheet" href="/eventix/css/auth.css">
+    <?php include 'includes/header_scripts.php'; ?>
 </head>
-<body class="auth-body">
+<body class="text-text font-sans h-screen m-0 overflow-hidden">
 
-<div class="auth-split">
-    <div class="auth-left">
-        <div class="auth-left-inner">
-            <div class="auth-logo">
-                <img src="/eventix/images/eventix_logo.jpg" alt="Eventix Logo" style="width: 120px; height: auto; margin-bottom: 10px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-                <h2>Eventix</h2>
-                <span>EVENT MANAGEMENT SYSTEM</span>
-            </div>
-            <div class="auth-tagline">
-                <h1>Every event<br>a memory.</h1>
-                <p>Sign in to explore curated venues and manage your bookings with ease.</p>
-            </div>
-            <div class="auth-dots">
-                <span class="dot"></span>
-                <span class="dot active"></span>
-                <span class="dot"></span>
-            </div>
+<div class="flex h-screen">
+    <!-- LEFT PANEL -->
+    <div class="hidden lg:flex flex-col justify-between w-5/12 bg-pink-light p-14 relative" data-aos="fade-right" data-aos-duration="1000">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.8),transparent)] pointer-events-none"></div>
+        <div class="relative z-10 flex flex-col items-start gap-3">
+            <img src="/eventix/images/eventix_logo.jpg" alt="Eventix Logo" class="w-[120px] h-auto rounded-xl shadow-sm mb-2 mix-blend-multiply">
+            <h2 class="font-sans text-3xl font-bold text-pink-main tracking-tight m-0">Eventix</h2>
+            <span class="text-[10px] tracking-widest text-text-muted font-semibold uppercase">EVENT MANAGEMENT SYSTEM</span>
+        </div>
+        <div class="relative z-10">
+            <h1 class="font-[Playfair_Display] text-6xl text-pink-dark leading-[1.1] mb-6">Every event<br>a memory.</h1>
+            <p class="text-text-muted text-base max-w-[280px] leading-relaxed">Sign in to explore curated venues and manage your bookings with ease.</p>
+        </div>
+        <div class="relative z-10 flex gap-2">
+            <span class="w-2 h-2 rounded-full bg-pink-main/30"></span>
+            <span class="w-2 h-2 rounded-full bg-pink-main"></span>
+            <span class="w-2 h-2 rounded-full bg-pink-main/30"></span>
         </div>
     </div>
 
-    <div class="auth-right">
-        <div class="auth-form-wrap">
-            <h1>Welcome<br>Back</h1>
-            <p>Sign in to your account to continue.</p>
+    <!-- RIGHT PANEL -->
+    <div class="w-full lg:w-7/12 bg-white flex flex-col justify-center items-center p-8 overflow-y-auto" data-aos="fade-left" data-aos-duration="1000">
+        <div class="w-full max-w-[400px]">
+            <h1 class="font-[Playfair_Display] text-5xl text-pink-dark leading-[1.1] mb-4">Welcome<br>Back</h1>
+            <p class="text-text-muted text-sm mb-10">Sign in to your account to continue.</p>
 
             <?php if ($error): ?>
-                <div class="alert alert-error"><?= $error ?></div>
+                <div class="bg-red-50 text-red-600 px-4 py-3 rounded-lg text-sm mb-6"><?= $error ?></div>
             <?php endif; ?>
 
-            <form method="POST">
-                <div class="form-group">
-                    <label>Email Address</label>
-                    <input type="email" name="email" placeholder="your@email.com" required>
+            <form method="POST" onsubmit="return validateLogin()">
+                <div class="mb-5">
+                    <label class="block text-[11px] font-semibold tracking-wider uppercase text-text-muted mb-2">Email Address</label>
+                    <input type="email" name="email" placeholder="your@email.com" required class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm font-sans text-text transition-colors focus:border-pink-main focus:bg-pink-50/30 outline-none">
                 </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <div class="input-eye">
-                        <input type="password" name="password" id="passInput" placeholder="••••••••" required>
-                        <span onclick="togglePass()">👁</span>
+                <div class="mb-8">
+                    <label class="block text-[11px] font-semibold tracking-wider uppercase text-text-muted mb-2">Password</label>
+                    <div class="relative">
+                        <input type="password" name="password" id="passInput" placeholder="••••••••" required class="w-full px-4 py-3 pr-10 border border-gray-200 rounded-xl text-sm font-sans text-text transition-colors focus:border-pink-main focus:bg-pink-50/30 outline-none">
+                        <span onclick="togglePass()" class="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-text-muted hover:text-pink-main text-lg select-none">👁</span>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary" style="width:100%">Sign In →</button>
+                <button type="submit" class="w-full bg-pink-main text-white py-3.5 rounded-full font-semibold text-sm hover:bg-pink-dark transition-all transform hover:-translate-y-px active:scale-95 shadow-md hover:shadow-lg active:scale-95 transition-all">Sign In →</button>
             </form>
 
-            <p class="auth-switch">Don't have an account? <a href="/eventix/register.php">Register here</a></p>
-            <a href="/eventix/login.php?role=admin" class="admin-portal-link">ADMIN PORTAL</a>
+            <p class="text-center mt-8 text-sm text-text-muted">
+                Don't have an account? <a href="/eventix/register.php" class="text-pink-main font-semibold hover:underline">Register here</a>
+            </p>
+            <div class="text-center mt-12">
+                <a href="/eventix/login.php?role=admin" class="text-[10px] tracking-widest uppercase font-semibold text-text-muted hover:text-pink-main transition-colors">ADMIN PORTAL</a>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
-function togglePass() {
-    const input = document.getElementById('passInput');
-    input.type = input.type === 'password' ? 'text' : 'password';
+function validateLogin() {
+    const email = document.querySelector('input[name="email"]').value.trim();
+    let errors = [];
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        errors.push('Please enter a valid email address.');
+    }
+    if (errors.length > 0) {
+        let existing = document.getElementById('js-error');
+        if (existing) existing.remove();
+        let div = document.createElement('div');
+        div.id = 'js-error';
+        div.className = 'bg-red-50 text-red-600 px-4 py-3 rounded-lg text-sm mb-6';
+        div.innerHTML = errors.join('<br>');
+        document.querySelector('form').prepend(div);
+        return false;
+    }
+    return true;
 }
 </script>
+<script src="/eventix/js/auth.js"></script>
+<?php include 'includes/footer_scripts.php'; ?>
 </body>
 </html>

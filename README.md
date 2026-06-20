@@ -1,10 +1,10 @@
-# Eventix (Alpha)
+# Eventix
 
-Eventix is a modern, geometric, Airbnb-inspired Event Management System built with PHP and MySQL. It allows users to browse and book event venues, and allows venue managers and administrators to oversee operations through custom dashboards. Eventix eliminates the old, traditional way of booking a venue through WhatsApp, phone calls, or manual paperwork, replacing it with a centralized, organized, and efficient online platform.
+Eventix is a modern, geometric, Airbnb-inspired Event Management System built with PHP and MySQL. It allows users to browse and book event venues, and allows venue managers and administrators to oversee operations through custom dashboards.
 
 ## Features
 
-- **Public e-Commerce Flow**: Unauthenticated users can browse all venues with a beautiful UI.
+- **Public e-Commerce Flow**: Unauthenticated users can browse all venues with a pastel pink themed UI.
 - **Frictionless Authentication**: AJAX-powered glassmorphism popup modals for quick login without losing your place in the booking funnel.
 - **Multi-Day Booking Engine**: Book venues across date ranges with dynamic JavaScript price calculations.
 - **Role-Based Portals**:

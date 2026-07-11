@@ -4,10 +4,12 @@ require_once '../includes/db.php';
 require_once '../includes/auth.php';
 requireLogin('admin');
 
+$success = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['status'], $_POST['booking_id'])) {
     $id     = (int)$_POST['booking_id'];
     $status = mysqli_real_escape_string($connect, $_POST['status']);
     mysqli_query($connect, "UPDATE bookings SET status='$status' WHERE id=$id");
+    $success = 'Booking status updated successfully!';
 }
 
 $bookings = mysqli_query($connect, "
@@ -23,73 +25,89 @@ $bookings = mysqli_query($connect, "
 <head>
     <meta charset="UTF-8">
     <title>Manage Bookings — Eventix</title>
-    <link rel="stylesheet" href="/eventix/css/style.css">
+    <?php include '../includes/header_scripts.php'; ?>
 </head>
 <body>
 
 <?php include '../includes/navbar.php'; ?>
 
-<div class="layout-sidebar">
-    <aside class="sidebar">
-        <p class="sidebar-section">Overview</p>
-        <ul class="sidebar-menu">
-            <li><a href="dashboard.php">📊 Dashboard</a></li>
+<div class="flex min-h-screen pt-24">
+    <aside class="w-64 bg-white border-r border-gray-100 shrink-0 py-8 shadow-sm  z-10">
+        <p class="text-[10px] tracking-widest text-text-muted font-bold uppercase mb-3 px-8 mt-6">Overview</p>
+        <ul class="list-none p-0 m-0 flex flex-col gap-1 px-4">
+            <li><a href="dashboard.php" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all text-text-muted hover:bg-gray-50 hover:text-text">Dashboard</a></li>
         </ul>
-        <p class="sidebar-section">Manage</p>
-        <ul class="sidebar-menu">
-            <li><a href="users.php">👥 Users</a></li>
-            <li><a href="venues.php">🏛️ Venues</a></li>
-            <li><a href="bookings.php" class="active">📅 Bookings</a></li>
-            <li><a href="payments.php">💳 Payments</a></li>
+        <p class="text-[10px] tracking-widest text-text-muted font-bold uppercase mb-3 px-8 mt-6">Manage</p>
+        <ul class="list-none p-0 m-0 flex flex-col gap-1 px-4">
+            <li><a href="users.php" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all text-text-muted hover:bg-gray-50 hover:text-text">Users</a></li>
+            <li><a href="venues.php" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all text-text-muted hover:bg-gray-50 hover:text-text">Venues</a></li>
+            <li><a href="bookings.php" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all bg-pink-main/10 text-pink-main font-semibold">Bookings</a></li>
+            <li><a href="payments.php" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all text-text-muted hover:bg-gray-50 hover:text-text">Payments</a></li>
+            <li><a href="reports.php" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all text-text-muted hover:bg-gray-50 hover:text-text">Reports</a></li>
         </ul>
     </aside>
 
-    <main class="main-content">
-        <div class="page-header">
-            <h1>All Bookings</h1>
+    <main class="flex-1 p-10 overflow-y-auto">
+        <div class="mb-10" data-aos="fade-down">
+            <h1 class="font-[Playfair_Display] text-4xl text-pink-dark mb-2">All Bookings</h1>
             <p>Review and manage all venue bookings</p>
         </div>
 
-        <div class="card">
-            <div class="table-wrap">
-                <table>
+        <?php if ($success): ?>
+            <div class="bg-green-50 text-green-700 px-4 py-3 rounded-lg text-sm mb-6"><?= $success ?></div>
+        <?php endif; ?>
+
+        <div class="bg-white border border-gray-100 rounded-2xl  p-6 shadow-soft" data-aos="fade-up">
+            <div class="overflow-x-auto rounded-2xl border border-gray-100 shadow-sm mb-8" data-aos="fade-up">
+                <table class="w-full text-sm text-left">
                     <thead>
                         <tr>
-                            <th>#</th>
-                            <th>Customer</th>
-                            <th>Venue</th>
-                            <th>Event Date</th>
-                            <th>Guests</th>
-                            <th>Status</th>
-                            <th>Update Status</th>
+                            <th class="px-6 py-4 border-b border-gray-100 text-pink-dark text-xs uppercase tracking-wider font-semibold bg-gray-50">#</th>
+                            <th class="px-6 py-4 border-b border-gray-100 text-pink-dark text-xs uppercase tracking-wider font-semibold bg-gray-50">Customer</th>
+                            <th class="px-6 py-4 border-b border-gray-100 text-pink-dark text-xs uppercase tracking-wider font-semibold bg-gray-50">Venue</th>
+                            <th class="px-6 py-4 border-b border-gray-100 text-pink-dark text-xs uppercase tracking-wider font-semibold bg-gray-50">Event Date</th>
+                            <th class="px-6 py-4 border-b border-gray-100 text-pink-dark text-xs uppercase tracking-wider font-semibold bg-gray-50">Guests</th>
+                            <th class="px-6 py-4 border-b border-gray-100 text-pink-dark text-xs uppercase tracking-wider font-semibold bg-gray-50">Status</th>
+                            <th class="px-6 py-4 border-b border-gray-100 text-pink-dark text-xs uppercase tracking-wider font-semibold bg-gray-50">Update Status</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php $i = 1; while ($row = mysqli_fetch_assoc($bookings)): ?>
-                        <tr>
-                            <td><?= $i++ ?></td>
-                            <td><?= htmlspecialchars($row['full_name']) ?></td>
-                            <td><?= htmlspecialchars($row['venue_name']) ?></td>
-                            <td><?= date('d M Y', strtotime($row['start_date'])) ?> to <?= date('d M Y', strtotime($row['end_date'])) ?></td>
-                            <td><?= $row['guest_count'] ?></td>
-                            <td>
-                                <span class="badge badge-<?= $row['status'] === 'confirmed' ? 'success' : ($row['status'] === 'pending' ? 'warning' : 'danger') ?>">
+                        <?php 
+                        $rows = [];
+                        while ($row = mysqli_fetch_assoc($bookings)) $rows[] = $row;
+                        if (empty($rows)): ?>
+                        <tr><td colspan="7" class="px-6 py-12 text-center text-text-muted">
+                            <p style="font-size:32px;margin-bottom:8px">📅</p>
+                            <p class="font-semibold mb-1">No bookings yet</p>
+                            <p class="text-sm">Bookings from customers will appear here.</p>
+                        </td></tr>
+                        <?php else: ?>
+                        <?php $i = 1; foreach ($rows as $row): ?>
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="px-6 py-4 border-b border-gray-100"><?= $i++ ?></td>
+                            <td class="px-6 py-4 border-b border-gray-100"><?= htmlspecialchars($row['full_name']) ?></td>
+                            <td class="px-6 py-4 border-b border-gray-100"><?= htmlspecialchars($row['venue_name']) ?></td>
+                            <td class="px-6 py-4 border-b border-gray-100"><?= date('d M Y', strtotime($row['start_date'])) ?> to <?= date('d M Y', strtotime($row['end_date'])) ?></td>
+                            <td class="px-6 py-4 border-b border-gray-100"><?= $row['guest_count'] ?></td>
+                            <td class="px-6 py-4 border-b border-gray-100">
+                                <span class="<?= $row['status']==='confirmed' ? 'bg-green-100 text-green-700' : ($row['status']==='pending' ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700') ?> px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider">
                                     <?= ucfirst($row['status']) ?>
                                 </span>
                             </td>
-                            <td>
-                                <form method="POST" style="display:flex;gap:6px">
+                            <td class="px-6 py-4 border-b border-gray-100">
+                                <form method="POST" style="display:flex;gap:6px" onsubmit="return confirm('Are you sure you want to change this booking status?')">
                                     <input type="hidden" name="booking_id" value="<?= $row['id'] ?>">
                                     <select name="status" style="padding:6px 10px;border:1.5px solid var(--pink-light);border-radius:8px;font-size:13px;">
                                         <option value="pending"   <?= $row['status']==='pending'   ? 'selected':'' ?>>Pending</option>
                                         <option value="confirmed" <?= $row['status']==='confirmed' ? 'selected':'' ?>>Confirmed</option>
                                         <option value="cancelled" <?= $row['status']==='cancelled' ? 'selected':'' ?>>Cancelled</option>
                                     </select>
-                                    <button type="submit" class="btn btn-primary btn-sm">Save</button>
+                                    <button type="submit" class="bg-pink-main text-white px-4 py-2 rounded-full font-semibold text-xs hover:bg-pink-dark transition-colors inline-block">Save</button>
                                 </form>
                             </td>
                         </tr>
-                        <?php endwhile; ?>
+                        <?php endforeach; ?>
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>
@@ -97,5 +115,6 @@ $bookings = mysqli_query($connect, "
     </main>
 </div>
 
+<?php include '../includes/footer_scripts.php'; ?>
 </body>
 </html>

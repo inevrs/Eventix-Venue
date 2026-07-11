@@ -43,60 +43,74 @@ $ratings = mysqli_query($connect, "
 <head>
     <meta charset="UTF-8">
     <title>Earnings — Eventix</title>
-    <link rel="stylesheet" href="/eventix/css/style.css">
+    <?php include '../includes/header_scripts.php'; ?>
+    <style>
+        @media print {
+            nav, aside, .no-print { display: none !important; }
+            main { padding: 0 !important; margin: 0 !important; width: 100% !important; }
+            .flex { display: block !important; }
+            .pt-24 { padding-top: 0 !important; }
+        }
+    </style>
 </head>
 <body>
 
 <?php include '../includes/navbar.php'; ?>
 
-<div class="layout-sidebar">
-    <aside class="sidebar">
-        <p class="sidebar-section">Overview</p>
-        <ul class="sidebar-menu">
-            <li><a href="dashboard.php">📊 Dashboard</a></li>
+<div class="flex min-h-screen pt-24">
+    <aside class="w-64 bg-white border-r border-gray-100 shrink-0 py-8 shadow-sm  z-10">
+        <p class="text-[10px] tracking-widest text-text-muted font-bold uppercase mb-3 px-8">Overview</p>
+        <ul class="list-none p-0 m-0 mb-8 flex flex-col gap-1 px-4">
+            <li><a href="dashboard.php" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all text-text-muted hover:bg-gray-50 hover:text-text">Dashboard</a></li>
         </ul>
-        <p class="sidebar-section">My Business</p>
-        <ul class="sidebar-menu">
-            <li><a href="venues.php">🏛️ My Venues</a></li>
-            <li><a href="bookings.php">📅 Bookings</a></li>
-            <li><a href="earnings.php" class="active">💰 Earnings</a></li>
+        <p class="text-[10px] tracking-widest text-text-muted font-bold uppercase mb-3 px-8">My Business</p>
+        <ul class="list-none p-0 m-0 mb-8 flex flex-col gap-1 px-4">
+            <li><a href="venues.php" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all text-text-muted hover:bg-gray-50 hover:text-text">My Venues</a></li>
+            <li><a href="bookings.php" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all text-text-muted hover:bg-gray-50 hover:text-text">Bookings</a></li>
+            <li><a href="earnings.php" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all bg-pink-main/10 text-pink-main font-semibold">Earnings</a></li>
         </ul>
     </aside>
 
-    <main class="main-content">
-        <div class="page-header">
-            <h1>Earnings & Ratings</h1>
+    <main class="flex-1 p-10 overflow-y-auto">
+        <div class="flex justify-between items-center mb-10" data-aos="fade-down">
+            <div>
+                <h1 class="font-[Playfair_Display] text-4xl text-pink-dark mb-2">Earnings & Ratings</h1>
+                <p class="text-text-muted text-sm no-print">Review your business performance and customer reviews</p>
+            </div>
+            <button onclick="window.print()" class="bg-pink-main text-white px-5 py-2.5 rounded-full font-semibold text-xs hover:bg-pink-dark transition-all transform hover:-translate-y-px active:scale-95 shadow-md no-print">
+                🖨️ Print Report
+            </button>
         </div>
 
-        <div class="stats-row">
-            <div class="stat-card">
-                <div class="stat-label">Total Earnings</div>
-                <div class="stat-value">RM<?= number_format($total, 0) ?></div>
-                <div class="stat-sub">Confirmed payments</div>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8" data-aos="fade-up">
+            <div class="bg-white border border-gray-100 rounded-2xl  p-6 shadow-soft hover:shadow-hover transition-shadow">
+                <div class="text-xs tracking-wider text-text-muted font-bold uppercase mb-2">Total Earnings</div>
+                <div class="font-[Playfair_Display] text-4xl text-pink-dark">RM<?= number_format($total, 0) ?></div>
+                <div class="text-xs text-text-muted mt-2">Confirmed payments</div>
             </div>
-            <div class="stat-card">
-                <div class="stat-label">Avg Rating</div>
-                <div class="stat-value"><?= number_format($avg_rating, 1) ?></div>
-                <div class="stat-sub">⭐ across all venues</div>
+            <div class="bg-white border border-gray-100 rounded-2xl  p-6 shadow-soft hover:shadow-hover transition-shadow">
+                <div class="text-xs tracking-wider text-text-muted font-bold uppercase mb-2">Avg Rating</div>
+                <div class="font-[Playfair_Display] text-4xl text-pink-dark"><?= number_format($avg_rating, 1) ?></div>
+                <div class="text-xs text-text-muted mt-2">⭐ across all venues</div>
             </div>
         </div>
 
-        <div class="card" style="margin-bottom:28px">
-            <h2 class="section-title">Payment History</h2>
-            <div class="table-wrap">
-                <table>
-                    <thead>
-                        <tr><th>Customer</th><th>Venue</th><th>Amount</th><th>Method</th><th>Status</th><th>Date</th></tr>
+        <div class="bg-white border border-gray-100 rounded-2xl  p-8 shadow-soft mb-8" style="margin-bottom:28px">
+            <h2 class="font-[Playfair_Display] text-2xl text-pink-dark mb-6">Payment History</h2>
+            <div class="overflow-x-auto rounded-2xl border border-gray-100 shadow-sm">
+                <table class="w-full text-sm text-left border-collapse min-w-[800px]">
+                    <thead class="bg-gray-50 text-pink-dark text-xs uppercase tracking-wider font-semibold">
+                        <tr><th class="px-6 py-4 border-b border-gray-100">Customer</th><th class="px-6 py-4 border-b border-gray-100">Venue</th><th class="px-6 py-4 border-b border-gray-100">Amount</th><th class="px-6 py-4 border-b border-gray-100">Method</th><th class="px-6 py-4 border-b border-gray-100">Status</th><th class="px-6 py-4 border-b border-gray-100">Date</th></tr>
                     </thead>
                     <tbody>
                         <?php while ($row = mysqli_fetch_assoc($payments)): ?>
-                        <tr>
-                            <td><?= htmlspecialchars($row['full_name']) ?></td>
-                            <td><?= htmlspecialchars($row['venue_name']) ?></td>
-                            <td>RM<?= number_format($row['amount'], 2) ?></td>
-                            <td><?= htmlspecialchars($row['method']) ?></td>
-                            <td><span class="badge badge-<?= $row['status']==='paid'?'success':'warning' ?>"><?= ucfirst($row['status']) ?></span></td>
-                            <td><?= date('d M Y', strtotime($row['paid_at'])) ?></td>
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="px-6 py-4 border-b border-gray-100 text-text"><?= htmlspecialchars($row['full_name']) ?></td>
+                            <td class="px-6 py-4 border-b border-gray-100 text-text"><?= htmlspecialchars($row['venue_name']) ?></td>
+                            <td class="px-6 py-4 border-b border-gray-100 text-text">RM<?= number_format($row['amount'], 2) ?></td>
+                            <td class="px-6 py-4 border-b border-gray-100 text-text"><?= htmlspecialchars($row['method']) ?></td>
+                            <td class="px-6 py-4 border-b border-gray-100 text-text"><span class="badge badge-<?= $row['status']==='paid'?'success':'warning' ?>"><?= ucfirst($row['status']) ?></span></td>
+                            <td class="px-6 py-4 border-b border-gray-100 text-text"><?= date('d M Y', strtotime($row['paid_at'])) ?></td>
                         </tr>
                         <?php endwhile; ?>
                     </tbody>
@@ -104,21 +118,21 @@ $ratings = mysqli_query($connect, "
             </div>
         </div>
 
-        <div class="card">
-            <h2 class="section-title">Customer Reviews</h2>
-            <div class="table-wrap">
-                <table>
-                    <thead>
-                        <tr><th>Customer</th><th>Venue</th><th>Rating</th><th>Review</th><th>Date</th></tr>
+        <div class="bg-white border border-gray-100 rounded-2xl  p-8 shadow-soft mb-8">
+            <h2 class="font-[Playfair_Display] text-2xl text-pink-dark mb-6">Customer Reviews</h2>
+            <div class="overflow-x-auto rounded-2xl border border-gray-100 shadow-sm">
+                <table class="w-full text-sm text-left border-collapse min-w-[800px]">
+                    <thead class="bg-gray-50 text-pink-dark text-xs uppercase tracking-wider font-semibold">
+                        <tr><th class="px-6 py-4 border-b border-gray-100">Customer</th><th class="px-6 py-4 border-b border-gray-100">Venue</th><th class="px-6 py-4 border-b border-gray-100">Rating</th><th class="px-6 py-4 border-b border-gray-100">Review</th><th class="px-6 py-4 border-b border-gray-100">Date</th></tr>
                     </thead>
                     <tbody>
                         <?php while ($row = mysqli_fetch_assoc($ratings)): ?>
-                        <tr>
-                            <td><?= htmlspecialchars($row['full_name']) ?></td>
-                            <td><?= htmlspecialchars($row['venue_name']) ?></td>
-                            <td>⭐ <?= $row['rating'] ?>/5</td>
-                            <td><?= htmlspecialchars($row['review'] ?? '—') ?></td>
-                            <td><?= date('d M Y', strtotime($row['created_at'])) ?></td>
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="px-6 py-4 border-b border-gray-100 text-text"><?= htmlspecialchars($row['full_name']) ?></td>
+                            <td class="px-6 py-4 border-b border-gray-100 text-text"><?= htmlspecialchars($row['venue_name']) ?></td>
+                            <td class="px-6 py-4 border-b border-gray-100 text-text">⭐ <?= $row['rating'] ?>/5</td>
+                            <td class="px-6 py-4 border-b border-gray-100 text-text"><?= htmlspecialchars($row['review'] ?? '—') ?></td>
+                            <td class="px-6 py-4 border-b border-gray-100 text-text"><?= date('d M Y', strtotime($row['created_at'])) ?></td>
                         </tr>
                         <?php endwhile; ?>
                     </tbody>
@@ -128,5 +142,6 @@ $ratings = mysqli_query($connect, "
     </main>
 </div>
 
+<?php include '../includes/footer_scripts.php'; ?>
 </body>
 </html>

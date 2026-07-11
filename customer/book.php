@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <title>Book Venue — Eventix</title>
-    <link rel="stylesheet" href="/eventix/css/style.css">
+    <?php include '../includes/header_scripts.php'; ?>
     <style>
         .summary-row {
             display: flex;
@@ -97,49 +97,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <?php include '../includes/navbar.php'; ?>
 
-<div class="page-wrapper" style="max-width:860px">
-    <div class="page-header">
-        <h1>Complete Your Booking</h1>
+<div class="max-w-[860px] mx-auto px-6 py-10 mt-24"  style="max-width:860px" data-aos="fade-up">
+    <div class="mb-10" data-aos="fade-down">
+        <h1 class="font-[Playfair_Display] text-4xl text-pink-dark mb-2">Complete Your Booking</h1>
         <div style="margin-bottom: 24px;">
-            <a href="venue_detail.php?id=<?= $id ?>" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 8px;">
+            <a href="venue_detail.php?id=<?= $id ?>" class="border-2 border-pink-light text-pink-main px-4 py-1.5 rounded-full font-semibold text-xs hover:border-pink-main hover:bg-pink-50 transition-colors inline-block" style="display: inline-flex; align-items: center; gap: 8px;">
                 <span>←</span> Back to Venue
             </a>
         </div>
     </div>
 
-    <?php if ($error): ?><div class="alert alert-error"><?= $error ?></div><?php endif; ?>
+    <?php if ($error): ?><div class="bg-red-50 text-red-600 px-4 py-3 rounded-lg text-sm mb-6"><?= $error ?></div><?php endif; ?>
 
-    <div style="display:grid;grid-template-columns:1fr 340px;gap:28px;align-items:start">
+    <div class="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8 items-start">
 
-        <!-- Booking Form -->
-        <div class="card">
+        <div class="bg-white border border-gray-100 rounded-2xl  p-6 shadow-soft" data-aos="fade-up">
             <h2 style="font-family:'Playfair Display',serif;color:var(--pink-dark);margin-bottom:24px">Your Details</h2>
-            <form method="POST">
+            <form method="POST" onsubmit="return validateBooking()">
                 <input type="hidden" name="addon_ids" value="<?= implode(',', $addon_ids) ?>">
                 <div style="display: flex; gap: 16px;">
-                    <div class="form-group" style="flex: 1;">
+                    <div class="mb-5" style="flex: 1;">
                         <label>Start Date</label>
-                        <input type="date" name="start_date" id="start_date" min="<?= date('Y-m-d', strtotime('+1 day')) ?>" required>
+                        <input type="date" name="start_date" id="start_date" class="w-full px-5 py-3.5 border border-gray-200 rounded-xl text-sm font-sans focus:border-pink-main focus:ring-2 focus:ring-pink-main/10 outline-none transition-all" min="<?= date('Y-m-d', strtotime('+1 day')) ?>" required>
                     </div>
-                    <div class="form-group" style="flex: 1;">
+                    <div class="mb-5" style="flex: 1;">
                         <label>End Date</label>
-                        <input type="date" name="end_date" id="end_date" min="<?= date('Y-m-d', strtotime('+1 day')) ?>" required>
+                        <input type="date" name="end_date" id="end_date" class="w-full px-5 py-3.5 border border-gray-200 rounded-xl text-sm font-sans focus:border-pink-main focus:ring-2 focus:ring-pink-main/10 outline-none transition-all" min="<?= date('Y-m-d', strtotime('+1 day')) ?>" required>
                     </div>
                 </div>
-                <div class="form-group">
+                <div class="mb-5">
                     <label>Number of Guests</label>
-                    <input type="number" name="guest_count" min="1" max="<?= $venue['capacity'] ?>" placeholder="Max <?= $venue['capacity'] ?>" required>
+                    <input type="number" name="guest_count" class="w-full px-5 py-3.5 border border-gray-200 rounded-xl text-sm font-sans focus:border-pink-main focus:ring-2 focus:ring-pink-main/10 outline-none transition-all" min="1" max="<?= $venue['capacity'] ?>" placeholder="Max <?= $venue['capacity'] ?>" required>
                 </div>
-                <div class="form-group">
+                <div class="mb-5">
                     <label>Additional Notes</label>
-                    <textarea name="notes" rows="3" placeholder="Any special requirements..."></textarea>
+                    <textarea name="notes" class="w-full px-5 py-3.5 border border-gray-200 rounded-xl text-sm font-sans focus:border-pink-main focus:ring-2 focus:ring-pink-main/10 outline-none transition-all" rows="3" placeholder="Any special requirements..."></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary" style="width:100%">Proceed to Payment →</button>
+                <button type="submit" class="bg-pink-main text-white px-6 py-2.5 rounded-full hover:bg-pink-dark transition-all hover:-translate-y-px active:scale-95 shadow-md hover:shadow-lg" style="width:100%">Proceed to Payment →</button>
             </form>
         </div>
 
         <!-- Order Summary -->
-        <div class="card" style="position:sticky;top:84px">
+        <div class="bg-white border border-gray-100 rounded-2xl  p-6 shadow-soft" style="position:sticky;top:84px" data-aos="fade-up">
             <h2 style="font-family:'Playfair Display',serif;color:var(--pink-dark);margin-bottom:20px">Order Summary</h2>
 
             <div style="margin-bottom:16px">
@@ -177,37 +176,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </div>
 
 <script>
-const basePrice = <?= $venue['price_per_day'] ?>;
-const addonsTotal = <?= $addons_total ?>;
-const startInput = document.getElementById('start_date');
-const endInput = document.getElementById('end_date');
-const venueLabel = document.getElementById('venue-price-label');
-const venueDisplay = document.getElementById('venue-price-display');
-const grandDisplay = document.getElementById('grand-total-display');
+function validateBooking() {
+    const start = document.getElementById('start_date').value;
+    const end = document.getElementById('end_date').value;
+    const guests = document.querySelector('input[name="guest_count"]').value;
+    let errors = [];
 
-function calculateTotal() {
-    if (startInput.value) {
-        endInput.min = startInput.value;
+    if (!start) errors.push('Please select a start date.');
+    if (!end) errors.push('Please select an end date.');
+    if (start && end && new Date(end) < new Date(start)) errors.push('End date cannot be before start date.');
+    if (!guests || guests < 1) errors.push('Please enter the number of guests.');
+
+    if (errors.length > 0) {
+        let existing = document.getElementById('js-error');
+        if (existing) existing.remove();
+        let div = document.createElement('div');
+        div.id = 'js-error';
+        div.className = 'bg-red-50 text-red-600 px-4 py-3 rounded-lg text-sm mb-6';
+        div.innerHTML = errors.join('<br>');
+        document.querySelector('form').prepend(div);
+        return false;
     }
-    
-    if (startInput.value && endInput.value) {
-        const start = new Date(startInput.value);
-        const end = new Date(endInput.value);
-        let days = Math.round((end - start) / (1000 * 60 * 60 * 24)) + 1;
-        
-        if (days < 1) days = 1;
-        
-        const venueTotal = basePrice * days;
-        const grandTotal = venueTotal + addonsTotal;
-        
-        venueLabel.innerText = `Venue (${days} day${days > 1 ? 's' : ''})`;
-        venueDisplay.innerText = 'RM' + venueTotal.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
-        grandDisplay.innerText = 'RM' + grandTotal.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
-    }
+    return true;
 }
-
-startInput.addEventListener('change', calculateTotal);
-endInput.addEventListener('change', calculateTotal);
 </script>
+<script src="/eventix/js/booking.js"></script>
+<script>initBookingCalc(<?= $venue['price_per_day'] ?>, <?= $addons_total ?>);</script>
+<?php include '../includes/footer_scripts.php'; ?>
 </body>
 </html>

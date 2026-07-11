@@ -78,72 +78,95 @@ $venues = mysqli_query($connect, "
 <head>
     <meta charset="UTF-8">
     <title>My Venues — Eventix</title>
-    <link rel="stylesheet" href="/eventix/css/style.css">
+    <?php include '../includes/header_scripts.php'; ?>
+    <style>
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+    </style>
 </head>
 <body>
 
 <?php include '../includes/navbar.php'; ?>
 
-<div class="layout-sidebar">
-    <aside class="sidebar">
-        <p class="sidebar-section">Overview</p>
-        <ul class="sidebar-menu">
-            <li><a href="dashboard.php">📊 Dashboard</a></li>
+<div class="flex min-h-screen pt-24">
+    <aside class="w-64 bg-white border-r border-gray-100 shrink-0 py-8 shadow-sm  z-10">
+        <p class="text-[10px] tracking-widest text-text-muted font-bold uppercase mb-3 px-8">Overview</p>
+        <ul class="list-none p-0 m-0 mb-8 flex flex-col gap-1 px-4">
+            <li><a href="dashboard.php" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all text-text-muted hover:bg-gray-50 hover:text-text">Dashboard</a></li>
         </ul>
-        <p class="sidebar-section">My Business</p>
-        <ul class="sidebar-menu">
-            <li><a href="venues.php" class="active">🏛️ My Venues</a></li>
-            <li><a href="bookings.php">📅 Bookings</a></li>
-            <li><a href="earnings.php">💰 Earnings</a></li>
+        <p class="text-[10px] tracking-widest text-text-muted font-bold uppercase mb-3 px-8">My Business</p>
+        <ul class="list-none p-0 m-0 mb-8 flex flex-col gap-1 px-4">
+            <li><a href="venues.php" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all bg-pink-main/10 text-pink-main font-semibold">My Venues</a></li>
+            <li><a href="bookings.php" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all text-text-muted hover:bg-gray-50 hover:text-text">Bookings</a></li>
+            <li><a href="earnings.php" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all text-text-muted hover:bg-gray-50 hover:text-text">Earnings</a></li>
         </ul>
     </aside>
 
-    <main class="main-content">
-        <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start">
+    <main class="flex-1 p-10 overflow-y-auto">
+        <div class="mb-10" data-aos="fade-down" style="display:flex;justify-content:space-between;align-items:flex-start">
             <div>
-                <h1>My Venues</h1>
+                <h1 class="font-[Playfair_Display] text-4xl text-pink-dark mb-2">My Venues</h1>
                 <p>Manage your listed spaces</p>
             </div>
-            <button class="btn btn-primary" onclick="document.getElementById('addModal').classList.add('active')">+ Add Venue</button>
+            <button class="bg-pink-main text-white px-6 py-2.5 rounded-full font-semibold text-sm hover:bg-pink-dark transition-colors inline-block" onclick="document.getElementById('addModal').classList.add('active')">+ Add Venue</button>
         </div>
 
-        <?php if ($success): ?><div class="alert alert-success"><?= $success ?></div><?php endif; ?>
-        <?php if ($error):   ?><div class="alert alert-error"><?= $error ?></div><?php endif; ?>
+        <?php if ($success): ?><div class="bg-green-50 text-green-700 px-4 py-3 rounded-xl text-sm mb-6 border border-green-200"><?= $success ?></div><?php endif; ?>
+        <?php if ($error):   ?><div class="bg-red-50 text-red-600 px-4 py-3 rounded-xl text-sm mb-6 border border-red-200"><?= $error ?></div><?php endif; ?>
 
-        <div class="card">
-            <div class="table-wrap">
-                <table>
-                    <thead>
+        <div class="bg-white border border-gray-100 rounded-2xl  p-8 shadow-soft mb-8">
+            <div class="overflow-x-auto rounded-2xl border border-gray-100 shadow-sm">
+                <table class="w-full text-sm text-left border-collapse min-w-[800px]">
+                    <thead class="bg-gray-50 text-pink-dark text-xs uppercase tracking-wider font-semibold">
                         <tr>
-                            <th>Thumbnail</th>
-                            <th>Name</th>
-                            <th>Location</th>
-                            <th>Capacity</th>
-                            <th>Price/Day</th>
-                            <th>Status</th>
-                            <th>Actions</th>
+                            <th class="px-6 py-4 border-b border-gray-100">Thumbnail</th>
+                            <th class="px-6 py-4 border-b border-gray-100">Name</th>
+                            <th class="px-6 py-4 border-b border-gray-100">Location</th>
+                            <th class="px-6 py-4 border-b border-gray-100">Capacity</th>
+                            <th class="px-6 py-4 border-b border-gray-100">Price/Day</th>
+                            <th class="px-6 py-4 border-b border-gray-100">Status</th>
+                            <th class="px-6 py-4 border-b border-gray-100">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php while ($row = mysqli_fetch_assoc($venues)): ?>
-                        <tr>
-                            <td>
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="px-6 py-4 border-b border-gray-100 text-text">
                                 <?php if ($row['thumbnail']): ?>
                                     <img src="/eventix/<?= htmlspecialchars($row['thumbnail']) ?>" style="width:60px;height:45px;object-fit:cover;border-radius:6px">
                                 <?php else: ?>
                                     <div style="width:60px;height:45px;background:var(--pink-light);border-radius:6px;display:flex;align-items:center;justify-content:center">🏛️</div>
                                 <?php endif; ?>
                             </td>
-                            <td><?= htmlspecialchars($row['name']) ?></td>
-                            <td><?= htmlspecialchars($row['location']) ?></td>
-                            <td><?= $row['capacity'] ?> pax</td>
-                            <td>RM<?= number_format($row['price_per_day'], 2) ?></td>
-                            <td><span class="badge badge-<?= $row['status']==='active'?'success':'warning' ?>"><?= ucfirst($row['status']) ?></span></td>
+                            <td class="px-6 py-4 border-b border-gray-100 text-text"><?= htmlspecialchars($row['name']) ?></td>
+                            <td class="px-6 py-4 border-b border-gray-100 text-text"><?= htmlspecialchars($row['location']) ?></td>
+                            <td class="px-6 py-4 border-b border-gray-100 text-text"><?= $row['capacity'] ?> pax</td>
+                            <td class="px-6 py-4 border-b border-gray-100 text-text">RM<?= number_format($row['price_per_day'], 2) ?></td>
+                            <td class="px-6 py-4 border-b border-gray-100 text-text"><span class="badge badge-<?= $row['status']==='active'?'success':'warning' ?>"><?= ucfirst($row['status']) ?></span></td>
                             <td style="display:flex;gap:8px">
-                                <a href="edit_venue.php?id=<?= $row['id'] ?>" class="btn btn-outline btn-sm">Edit</a>
+                                <a href="edit_venue.php?id=<?= $row['id'] ?>" class="border-2 border-pink-light text-pink-main px-4 py-1.5 rounded-full font-semibold text-xs hover:border-pink-main hover:bg-pink-50 transition-colors inline-block">Edit</a>
                                 <form method="POST" onsubmit="return confirm('Delete venue?')">
                                     <input type="hidden" name="delete_id" value="<?= $row['id'] ?>">
-                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                    <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-full font-semibold text-xs hover:bg-red-600 transition-colors inline-block text-center">Delete</button>
                                 </form>
                             </td>
                         </tr>
@@ -161,45 +184,46 @@ $venues = mysqli_query($connect, "
         <h2>Add New Venue</h2>
         <form method="POST" enctype="multipart/form-data">
             <input type="hidden" name="action" value="add">
-            <div class="form-group">
-                <label>Venue Name</label>
-                <input type="text" name="name" required>
+            <div class="mb-5">
+                <label class="block text-[11px] font-semibold tracking-wider uppercase text-text-muted mb-2">Venue Name</label>
+                <input type="text" class="w-full px-5 py-3.5 border border-gray-200 rounded-xl text-sm font-sans focus:border-pink-main focus:ring-2 focus:ring-pink-main/10 outline-none transition-all"  name="name" required>
             </div>
-            <div class="form-group">
-                <label>Location</label>
-                <input type="text" name="location" required>
+            <div class="mb-5">
+                <label class="block text-[11px] font-semibold tracking-wider uppercase text-text-muted mb-2">Location</label>
+                <input type="text" class="w-full px-5 py-3.5 border border-gray-200 rounded-xl text-sm font-sans focus:border-pink-main focus:ring-2 focus:ring-pink-main/10 outline-none transition-all"  name="location" required>
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-                <div class="form-group">
-                    <label>Capacity (pax)</label>
-                    <input type="number" name="capacity" required>
+                <div class="mb-5">
+                    <label class="block text-[11px] font-semibold tracking-wider uppercase text-text-muted mb-2">Capacity (pax)</label>
+                    <input type="number" class="w-full px-5 py-3.5 border border-gray-200 rounded-xl text-sm font-sans focus:border-pink-main focus:ring-2 focus:ring-pink-main/10 outline-none transition-all"  name="capacity" required>
                 </div>
-                <div class="form-group">
-                    <label>Price per Day (RM)</label>
-                    <input type="number" name="price_per_day" step="0.01" required>
+                <div class="mb-5">
+                    <label class="block text-[11px] font-semibold tracking-wider uppercase text-text-muted mb-2">Price per Day (RM)</label>
+                    <input type="number" class="w-full px-5 py-3.5 border border-gray-200 rounded-xl text-sm font-sans focus:border-pink-main focus:ring-2 focus:ring-pink-main/10 outline-none transition-all"  name="price_per_day" step="0.01" required>
                 </div>
             </div>
-            <div class="form-group">
-                <label>Description</label>
-                <textarea name="description" rows="3"></textarea>
+            <div class="mb-5">
+                <label class="block text-[11px] font-semibold tracking-wider uppercase text-text-muted mb-2">Description</label>
+                <textarea name="description" rows="3" class="w-full px-5 py-3.5 border border-gray-200 rounded-xl text-sm font-sans focus:border-pink-main focus:ring-2 focus:ring-pink-main/10 outline-none transition-all"></textarea>
             </div>
-            <div class="form-group">
-                <label>Thumbnail Picture</label>
+            <div class="mb-5">
+                <label class="block text-[11px] font-semibold tracking-wider uppercase text-text-muted mb-2">Thumbnail Picture</label>
                 <input type="file" name="thumbnail" accept="image/*" style="padding:8px">
                 <small style="color:var(--text-muted);font-size:12px">This appears as the card preview image</small>
             </div>
-            <div class="form-group">
-                <label>Gallery Pictures</label>
+            <div class="mb-5">
+                <label class="block text-[11px] font-semibold tracking-wider uppercase text-text-muted mb-2">Gallery Pictures</label>
                 <input type="file" name="gallery[]" accept="image/*" multiple style="padding:8px">
                 <small style="color:var(--text-muted);font-size:12px">Select multiple — shown in venue detail page</small>
             </div>
             <div style="display:flex;gap:12px;justify-content:flex-end">
-                <button type="button" class="btn btn-outline" onclick="document.getElementById('addModal').classList.remove('active')">Cancel</button>
-                <button type="submit" class="btn btn-primary">Add Venue</button>
+                <button type="button" class="border border-gray-300 text-text px-5 py-2.5 rounded-full font-semibold text-sm hover:bg-gray-50 transition-colors" onclick="document.getElementById('addModal').classList.remove('active')">Cancel</button>
+                <button type="submit" class="bg-pink-main text-white px-6 py-2.5 rounded-full font-semibold text-sm hover:bg-pink-dark transition-colors inline-block">Add Venue</button>
             </div>
         </form>
     </div>
 </div>
 
+<?php include '../includes/footer_scripts.php'; ?>
 </body>
 </html>

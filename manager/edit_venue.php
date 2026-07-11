@@ -74,90 +74,90 @@ $thumb   = mysqli_fetch_assoc(mysqli_query($connect, "SELECT * FROM venue_images
 <head>
     <meta charset="UTF-8">
     <title>Edit Venue — Eventix</title>
-    <link rel="stylesheet" href="/eventix/css/style.css">
+    <?php include '../includes/header_scripts.php'; ?>
 </head>
 <body>
 
 <?php include '../includes/navbar.php'; ?>
 
-<div class="layout-sidebar">
-    <aside class="sidebar">
-        <p class="sidebar-section">Overview</p>
-        <ul class="sidebar-menu">
-            <li><a href="dashboard.php">📊 Dashboard</a></li>
+<div class="flex min-h-screen pt-24">
+    <aside class="w-64 bg-white border-r border-gray-100 shrink-0 py-8 shadow-sm  z-10">
+        <p class="text-[10px] tracking-widest text-text-muted font-bold uppercase mb-3 px-8">Overview</p>
+        <ul class="list-none p-0 m-0 mb-8 flex flex-col gap-1 px-4">
+            <li><a href="dashboard.php" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all text-text-muted hover:bg-gray-50 hover:text-text">📊 Dashboard</a></li>
         </ul>
-        <p class="sidebar-section">My Business</p>
-        <ul class="sidebar-menu">
-            <li><a href="venues.php" class="active">🏛️ My Venues</a></li>
-            <li><a href="bookings.php">📅 Bookings</a></li>
-            <li><a href="earnings.php">💰 Earnings</a></li>
+        <p class="text-[10px] tracking-widest text-text-muted font-bold uppercase mb-3 px-8">My Business</p>
+        <ul class="list-none p-0 m-0 mb-8 flex flex-col gap-1 px-4">
+            <li><a href="venues.php" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all bg-pink-main/10 text-pink-main font-semibold">🏛️ My Venues</a></li>
+            <li><a href="bookings.php" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all text-text-muted hover:bg-gray-50 hover:text-text">📅 Bookings</a></li>
+            <li><a href="earnings.php" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all text-text-muted hover:bg-gray-50 hover:text-text">💰 Earnings</a></li>
         </ul>
     </aside>
 
-    <main class="main-content">
-        <div class="page-header">
-            <h1>Edit Venue</h1>
+    <main class="flex-1 p-10 overflow-y-auto">
+        <div class="mb-10" data-aos="fade-down">
+            <h1 class="font-[Playfair_Display] text-4xl text-pink-dark mb-2">Edit Venue</h1>
         <div style="margin-bottom: 24px;">
-            <a href="venues.php" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 8px;">
+            <a href="venues.php" class="border-2 border-pink-light text-pink-main px-4 py-1.5 rounded-full font-semibold text-xs hover:border-pink-main hover:bg-pink-50 transition-colors inline-block" style="display: inline-flex; align-items: center; gap: 8px;">
                 <span>←</span> Back to My Venues
             </a>
         </div>
         </div>
 
-        <?php if ($success): ?><div class="alert alert-success"><?= $success ?></div><?php endif; ?>
-        <?php if ($error):   ?><div class="alert alert-error"><?= $error ?></div><?php endif; ?>
+        <?php if ($success): ?><div class="bg-green-50 text-green-700 px-4 py-3 rounded-xl text-sm mb-6 border border-green-200"><?= $success ?></div><?php endif; ?>
+        <?php if ($error):   ?><div class="bg-red-50 text-red-600 px-4 py-3 rounded-xl text-sm mb-6 border border-red-200"><?= $error ?></div><?php endif; ?>
 
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start">
-            <div class="card">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+            <div class="bg-white border border-gray-100 rounded-2xl  p-8 shadow-soft mb-8">
                 <form method="POST" enctype="multipart/form-data">
-                    <div class="form-group">
-                        <label>Venue Name</label>
-                        <input type="text" name="name" value="<?= htmlspecialchars($venue['name']) ?>" required>
+                    <div class="mb-5">
+                        <label class="block text-[11px] font-semibold tracking-wider uppercase text-text-muted mb-2">Venue Name</label>
+                        <input type="text" class="w-full px-5 py-3.5 border border-gray-200 rounded-xl text-sm font-sans focus:border-pink-main focus:ring-2 focus:ring-pink-main/10 outline-none transition-all"  name="name" value="<?= htmlspecialchars($venue['name']) ?>" required>
                     </div>
-                    <div class="form-group">
-                        <label>Location</label>
-                        <input type="text" name="location" value="<?= htmlspecialchars($venue['location']) ?>" required>
+                    <div class="mb-5">
+                        <label class="block text-[11px] font-semibold tracking-wider uppercase text-text-muted mb-2">Location</label>
+                        <input type="text" class="w-full px-5 py-3.5 border border-gray-200 rounded-xl text-sm font-sans focus:border-pink-main focus:ring-2 focus:ring-pink-main/10 outline-none transition-all"  name="location" value="<?= htmlspecialchars($venue['location']) ?>" required>
                     </div>
                     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-                        <div class="form-group">
-                            <label>Capacity (pax)</label>
-                            <input type="number" name="capacity" value="<?= $venue['capacity'] ?>" required>
+                        <div class="mb-5">
+                            <label class="block text-[11px] font-semibold tracking-wider uppercase text-text-muted mb-2">Capacity (pax)</label>
+                            <input type="number" class="w-full px-5 py-3.5 border border-gray-200 rounded-xl text-sm font-sans focus:border-pink-main focus:ring-2 focus:ring-pink-main/10 outline-none transition-all"  name="capacity" value="<?= $venue['capacity'] ?>" required>
                         </div>
-                        <div class="form-group">
-                            <label>Price per Day (RM)</label>
-                            <input type="number" name="price_per_day" step="0.01" value="<?= $venue['price_per_day'] ?>" required>
+                        <div class="mb-5">
+                            <label class="block text-[11px] font-semibold tracking-wider uppercase text-text-muted mb-2">Price per Day (RM)</label>
+                            <input type="number" class="w-full px-5 py-3.5 border border-gray-200 rounded-xl text-sm font-sans focus:border-pink-main focus:ring-2 focus:ring-pink-main/10 outline-none transition-all"  name="price_per_day" step="0.01" value="<?= $venue['price_per_day'] ?>" required>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label>Description</label>
-                        <textarea name="description" rows="4"><?= htmlspecialchars($venue['description']) ?></textarea>
+                    <div class="mb-5">
+                        <label class="block text-[11px] font-semibold tracking-wider uppercase text-text-muted mb-2">Description</label>
+                        <textarea name="description" rows="4" class="w-full px-5 py-3.5 border border-gray-200 rounded-xl text-sm font-sans focus:border-pink-main focus:ring-2 focus:ring-pink-main/10 outline-none transition-all"><?= htmlspecialchars($venue['description']) ?></textarea>
                     </div>
-                    <div class="form-group">
-                        <label>Status</label>
-                        <select name="status">
+                    <div class="mb-5">
+                        <label class="block text-[11px] font-semibold tracking-wider uppercase text-text-muted mb-2">Status</label>
+                        <select name="status" class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm font-sans text-text focus:border-pink-main focus:ring-2 focus:ring-pink-main/10 outline-none transition-all cursor-pointer pr-10">
                             <option value="active"   <?= $venue['status']==='active'   ?'selected':'' ?>>Active</option>
                             <option value="inactive" <?= $venue['status']==='inactive' ?'selected':'' ?>>Inactive</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label>Replace Thumbnail</label>
+                    <div class="mb-5">
+                        <label class="block text-[11px] font-semibold tracking-wider uppercase text-text-muted mb-2">Replace Thumbnail</label>
                         <?php if ($thumb): ?>
                             <img src="/eventix/<?= htmlspecialchars($thumb['image_path']) ?>" style="width:100%;height:120px;object-fit:cover;border-radius:8px;margin-bottom:8px">
                         <?php endif; ?>
                         <input type="file" name="thumbnail" accept="image/*" style="padding:8px">
                     </div>
-                    <div class="form-group">
-                        <label>Add Gallery Pictures</label>
+                    <div class="mb-5">
+                        <label class="block text-[11px] font-semibold tracking-wider uppercase text-text-muted mb-2">Add Gallery Pictures</label>
                         <input type="file" name="gallery[]" accept="image/*" multiple style="padding:8px">
                         <small style="color:var(--text-muted);font-size:12px">Adds to existing gallery</small>
                     </div>
-                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <button type="submit" class="bg-pink-main text-white px-6 py-2.5 rounded-full font-semibold text-sm hover:bg-pink-dark transition-colors inline-block">Save Changes</button>
                 </form>
             </div>
 
             <!-- Gallery management -->
-            <div class="card">
-                <h2 class="section-title">Gallery Images</h2>
+            <div class="bg-white border border-gray-100 rounded-2xl  p-8 shadow-soft mb-8">
+                <h2 class="font-[Playfair_Display] text-2xl text-pink-dark mb-6">Gallery Images</h2>
                 <?php
                 $gallery_rows = [];
                 while ($g = mysqli_fetch_assoc($gallery)) $gallery_rows[] = $g;
@@ -181,5 +181,6 @@ $thumb   = mysqli_fetch_assoc(mysqli_query($connect, "SELECT * FROM venue_images
     </main>
 </div>
 
+<?php include '../includes/footer_scripts.php'; ?>
 </body>
 </html>

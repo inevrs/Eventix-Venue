@@ -32,84 +32,85 @@ $recent_bookings = mysqli_query($connect, "
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard — Eventix</title>
-    <link rel="stylesheet" href="/eventix/css/style.css">
+    <?php include '../includes/header_scripts.php'; ?>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
 <?php include '../includes/navbar.php'; ?>
 
-<div class="layout-sidebar">
-    <aside class="sidebar">
-        <p class="sidebar-section">Overview</p>
-        <ul class="sidebar-menu">
-            <li><a href="dashboard.php" class="active">📊 Dashboard</a></li>
+<div class="flex min-h-screen pt-24">
+    <aside class="w-64 bg-white border-r border-gray-100 shrink-0 py-8 shadow-sm  z-10">
+        <p class="text-[10px] tracking-widest text-text-muted font-bold uppercase mb-3 px-8 mt-6">Overview</p>
+        <ul class="list-none p-0 m-0 flex flex-col gap-1 px-4">
+            <li><a href="dashboard.php" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all bg-pink-main/10 text-pink-main font-semibold">Dashboard</a></li>
         </ul>
-        <p class="sidebar-section">Manage</p>
-        <ul class="sidebar-menu">
-            <li><a href="users.php">👥 Users</a></li>
-            <li><a href="venues.php">🏛️ Venues</a></li>
-            <li><a href="bookings.php">📅 Bookings</a></li>
-            <li><a href="payments.php">💳 Payments</a></li>
+        <p class="text-[10px] tracking-widest text-text-muted font-bold uppercase mb-3 px-8 mt-6">Manage</p>
+        <ul class="list-none p-0 m-0 flex flex-col gap-1 px-4">
+            <li><a href="users.php" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all text-text-muted hover:bg-gray-50 hover:text-text">Users</a></li>
+            <li><a href="venues.php" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all text-text-muted hover:bg-gray-50 hover:text-text">Venues</a></li>
+            <li><a href="bookings.php" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all text-text-muted hover:bg-gray-50 hover:text-text">Bookings</a></li>
+            <li><a href="payments.php" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all text-text-muted hover:bg-gray-50 hover:text-text">Payments</a></li>
+            <li><a href="reports.php" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all text-text-muted hover:bg-gray-50 hover:text-text">Reports</a></li>
         </ul>
     </aside>
 
-    <main class="main-content">
-        <div class="page-header">
-            <h1>Dashboard</h1>
-            <p>Overview of the Eventix platform</p>
+    <main class="flex-1 p-10 overflow-y-auto">
+        <div class="mb-10" data-aos="fade-down">
+            <h1 class="font-[Playfair_Display] text-4xl text-pink-dark mb-2">Dashboard</h1>
+            <p class="text-text-muted text-sm">Overview of the Eventix platform</p>
         </div>
 
-        <div class="stats-row">
-            <div class="stat-card">
-                <div class="stat-label">Total Users</div>
-                <div class="stat-value"><?= $total_users ?></div>
-                <div class="stat-sub">Customers & managers</div>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8" data-aos="fade-up">
+            <div class="bg-white border border-gray-100 rounded-2xl  p-6 shadow-soft hover:shadow-hover transition-shadow">
+                <div class="text-xs tracking-wider text-text-muted font-bold uppercase mb-2">Total Users</div>
+                <div class="font-[Playfair_Display] text-4xl text-pink-dark"><?= $total_users ?></div>
+                <div class="text-xs text-text-muted mt-2">Customers & managers</div>
             </div>
-            <div class="stat-card">
-                <div class="stat-label">Venues</div>
-                <div class="stat-value"><?= $total_venues ?></div>
-                <div class="stat-sub">Listed on platform</div>
+            <div class="bg-white border border-gray-100 rounded-2xl  p-6 shadow-soft hover:shadow-hover transition-shadow">
+                <div class="text-xs tracking-wider text-text-muted font-bold uppercase mb-2">Venues</div>
+                <div class="font-[Playfair_Display] text-4xl text-pink-dark"><?= $total_venues ?></div>
+                <div class="text-xs text-text-muted mt-2">Listed on platform</div>
             </div>
-            <div class="stat-card">
-                <div class="stat-label">Bookings</div>
-                <div class="stat-value"><?= $total_bookings ?></div>
-                <div class="stat-sub">All time</div>
+            <div class="bg-white border border-gray-100 rounded-2xl  p-6 shadow-soft hover:shadow-hover transition-shadow">
+                <div class="text-xs tracking-wider text-text-muted font-bold uppercase mb-2">Bookings</div>
+                <div class="font-[Playfair_Display] text-4xl text-pink-dark"><?= $total_bookings ?></div>
+                <div class="text-xs text-text-muted mt-2">All time</div>
             </div>
-            <div class="stat-card">
-                <div class="stat-label">Revenue</div>
-                <div class="stat-value">RM<?= number_format($total_revenue, 0) ?></div>
-                <div class="stat-sub">Confirmed payments</div>
+            <div class="bg-white border border-gray-100 rounded-2xl  p-6 shadow-soft hover:shadow-hover transition-shadow">
+                <div class="text-xs tracking-wider text-text-muted font-bold uppercase mb-2">Revenue</div>
+                <div class="font-[Playfair_Display] text-4xl text-pink-dark">RM<?= number_format($total_revenue, 0) ?></div>
+                <div class="text-xs text-text-muted mt-2">Confirmed payments</div>
             </div>
         </div>
 
         <!-- Chart Section for STA116 Integration -->
-        <div class="card" style="margin-bottom: 24px; max-width: 600px;">
-            <h2 class="section-title">Booking Status Distribution (STA116 Integration)</h2>
+        <div class="bg-white border border-gray-100 rounded-2xl  p-8 shadow-soft mb-8" style="margin-bottom: 24px; max-width: 600px;" data-aos="fade-up">
+            <h2 class="font-[Playfair_Display] text-2xl text-pink-dark mb-6">Booking Status Distribution (STA116 Integration)</h2>
             <p style="color:var(--text-muted);font-size:14px;margin-bottom:16px;">This chart visualizes the frequency distribution of booking statuses.</p>
             <canvas id="statusChart"></canvas>
         </div>
 
-        <div class="card">
-            <h2 class="section-title">Recent Bookings</h2>
-            <div class="table-wrap">
-                <table>
+        <div class="bg-white border border-gray-100 rounded-2xl  p-8 shadow-soft mb-8" data-aos="fade-up">
+            <h2 class="font-[Playfair_Display] text-2xl text-pink-dark mb-6">Recent Bookings</h2>
+            <div class="overflow-x-auto rounded-2xl border border-gray-100 shadow-sm">
+                <table class="w-full text-sm text-left">
                     <thead>
                         <tr>
-                            <th>Customer</th>
-                            <th>Venue</th>
-                            <th>Date</th>
-                            <th>Status</th>
+                            <th class="px-6 py-4 border-b border-gray-100 text-pink-dark text-xs uppercase tracking-wider font-semibold bg-gray-50">Customer</th>
+                            <th class="px-6 py-4 border-b border-gray-100 text-pink-dark text-xs uppercase tracking-wider font-semibold bg-gray-50">Venue</th>
+                            <th class="px-6 py-4 border-b border-gray-100 text-pink-dark text-xs uppercase tracking-wider font-semibold bg-gray-50">Date</th>
+                            <th class="px-6 py-4 border-b border-gray-100 text-pink-dark text-xs uppercase tracking-wider font-semibold bg-gray-50">Status</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php while ($row = mysqli_fetch_assoc($recent_bookings)): ?>
-                        <tr>
-                            <td><?= htmlspecialchars($row['full_name']) ?></td>
-                            <td><?= htmlspecialchars($row['venue_name']) ?></td>
-                            <td><?= date('d M Y', strtotime($row['start_date'])) ?> to <?= date('d M Y', strtotime($row['end_date'])) ?></td>
-                            <td>
-                                <span class="badge badge-<?= $row['status'] === 'confirmed' ? 'success' : ($row['status'] === 'pending' ? 'warning' : 'danger') ?>">
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="px-6 py-4 border-b border-gray-100"><?= htmlspecialchars($row['full_name']) ?></td>
+                            <td class="px-6 py-4 border-b border-gray-100"><?= htmlspecialchars($row['venue_name']) ?></td>
+                            <td class="px-6 py-4 border-b border-gray-100"><?= date('d M Y', strtotime($row['start_date'])) ?> to <?= date('d M Y', strtotime($row['end_date'])) ?></td>
+                            <td class="px-6 py-4 border-b border-gray-100">
+                                <span class="<?= $row['status']==='confirmed' ? 'bg-green-100 text-green-700' : ($row['status']==='pending' ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700') ?> px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider">
                                     <?= ucfirst($row['status']) ?>
                                 </span>
                             </td>
@@ -122,31 +123,11 @@ $recent_bookings = mysqli_query($connect, "
     </main>
 </div>
 
+<script src="/eventix/js/admin_dashboard.js"></script>
 <script>
-const ctx = document.getElementById('statusChart').getContext('2d');
-new Chart(ctx, {
-    type: 'pie',
-    data: {
-        labels: <?= json_encode($chart_labels) ?>,
-        datasets: [{
-            label: 'Number of Bookings',
-            data: <?= json_encode($chart_data) ?>,
-            backgroundColor: [
-                'rgba(233, 30, 99, 0.7)',  // Pink (Confirmed)
-                'rgba(255, 193, 7, 0.7)',  // Yellow (Pending)
-                'rgba(158, 158, 158, 0.7)' // Grey (Cancelled)
-            ],
-            borderWidth: 1
-        }]
-    },
-    options: {
-        responsive: true,
-        plugins: {
-            legend: { position: 'bottom' }
-        }
-    }
-});
+initAdminChart(<?= json_encode($chart_labels) ?>, <?= json_encode($chart_data) ?>);
 </script>
 
+<?php include '../includes/footer_scripts.php'; ?>
 </body>
 </html>

@@ -18,6 +18,7 @@ Eventix is a modern, geometric, Airbnb-inspired Event Management System built wi
 2. Create a database named `eventix_db` in MySQL.
 3. Import the `database.sql` file to set up the schema and default data.
 4. Ensure the `uploads/venues/` and `uploads/profiles/` directories exist and are writable.
+5. Public entry points now live under the `public/` folder, while the root-level files remain as compatibility wrappers.
 
 ## Default Credentials
 

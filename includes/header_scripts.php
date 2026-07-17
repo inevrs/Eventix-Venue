@@ -46,6 +46,7 @@
     --card: #ffffff;
     --shadow: 0 24px 80px -42px rgba(0,0,0,0.16);
     --accent: #e8437a;
+    --pink-main: #e8437a;
     --accent-dark: #880e4f;
     --accent-light: #fce4ec;
 }
@@ -61,6 +62,7 @@ html.theme-dark {
     --card: #111111;
     --shadow: 0 24px 80px -42px rgba(0,0,0,0.9);
     --accent: #f472b6;
+    --pink-main: #f472b6;
     --accent-dark: #d53f8c;
     --accent-light: #fde2f8;
 }

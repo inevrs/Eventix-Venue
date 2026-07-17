@@ -74,10 +74,11 @@ $total_reviews = (int)mysqli_fetch_row(mysqli_query($connect, "SELECT COUNT(*) F
             box-shadow: 0 20px 40px rgba(0,0,0,0.08);
         }
         .stat-number {
-            background: linear-gradient(135deg, var(--pink-main), var(--accent));
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            display: inline-block;
         }
     </style>
 </head>

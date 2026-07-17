@@ -26,12 +26,17 @@ $payments = mysqli_query($connect, "
     <title>System Reports — Eventix</title>
     <?php include '../includes/header_scripts.php'; ?>
     <style>
+        #printSummary { display: none; }
         @media print {
-            nav, aside, .no-print { display: none !important; }
-            main { padding: 0 !important; margin: 0 !important; width: 100% !important; }
-            .flex { display: block !important; }
-            .pt-24 { padding-top: 0 !important; }
-            .shadow-soft { box-shadow: none !important; border: 1px solid #f3f4f6 !important; }
+            body { visibility: hidden; }
+            #printSummary, #printSummary * { visibility: visible; }
+            #printSummary {
+                display: block !important;
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -146,6 +151,43 @@ $payments = mysqli_query($connect, "
             </div>
         </div>
     </main>
+</div>
+
+<!-- Print-Only Summary -->
+<div id="printSummary">
+    <div style="text-align: center; border-bottom: 2px solid #db2777; padding-bottom: 15px; margin-bottom: 25px;">
+        <h1 style="font-family: 'Playfair Display', serif; font-size: 28px; color: #db2777; margin: 0 0 5px 0;">Eventix Platform System Report</h1>
+        <p style="font-size: 14px; color: #6b7280; margin: 0;">Generated on <?= date('d M Y, h:i A') ?></p>
+    </div>
+    
+    <div style="margin-bottom: 25px;">
+        <h2 style="font-size: 18px; color: #111827; margin: 0 0 10px 0;">Administrator Summary</h2>
+        <p style="font-size: 14px; margin: 3px 0;"><strong>Administrator:</strong> <?= htmlspecialchars($_SESSION['name']) ?></p>
+        <p style="font-size: 14px; margin: 3px 0;"><strong>Role:</strong> Platform Administrator</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 30px;">
+        <div style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 15px; text-align: center;">
+            <div style="font-size: 12px; color: #6b7280; text-transform: uppercase; font-weight: bold; margin-bottom: 5px;">Total Revenue</div>
+            <div style="font-size: 24px; color: #db2777; font-weight: bold;">RM<?= number_format($total_revenue, 2) ?></div>
+        </div>
+        <div style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 15px; text-align: center;">
+            <div style="font-size: 12px; color: #6b7280; text-transform: uppercase; font-weight: bold; margin-bottom: 5px;">Total Users</div>
+            <div style="font-size: 24px; color: #db2777; font-weight: bold;"><?= $total_users ?> Users</div>
+        </div>
+        <div style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 15px; text-align: center;">
+            <div style="font-size: 12px; color: #6b7280; text-transform: uppercase; font-weight: bold; margin-bottom: 5px;">Total Venues</div>
+            <div style="font-size: 24px; color: #db2777; font-weight: bold;"><?= $total_venues ?> Venues</div>
+        </div>
+        <div style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 15px; text-align: center;">
+            <div style="font-size: 12px; color: #6b7280; text-transform: uppercase; font-weight: bold; margin-bottom: 5px;">Total Bookings</div>
+            <div style="font-size: 24px; color: #db2777; font-weight: bold;"><?= $total_bookings ?> Bookings</div>
+        </div>
+    </div>
+    
+    <div style="border-top: 1px dashed #e5e7eb; padding-top: 15px; text-align: center; font-size: 12px; color: #9ca3af;">
+        Eventix System — Secure Coursework Verification Report
+    </div>
 </div>
 
 <?php include '../includes/footer_scripts.php'; ?>

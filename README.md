@@ -185,6 +185,38 @@ Manager confirms booking (status: confirmed)
 
 ---
 
+## Production Deployment
+
+To deploy Eventix on a production server (such as a DigitalOcean Droplet), follow these guidelines:
+
+### 1. Server Environment
+*   **Infrastructure**: Virtual private server (e.g. DigitalOcean Droplet) running Ubuntu 22.04+ (LTS).
+*   **Web Server**: Apache2 (LAMP Stack) with `mod_rewrite` enabled for `.htaccess` routing support.
+*   **Database**: MySQL Server 8.x.
+
+### 2. Environment Variables (.env)
+Create a `.env` file in the root directory to store database connection details securely (never commit this file to Git):
+```env
+DB_HOST=localhost
+DB_USER=eventix_user
+DB_PASS=your_secure_password
+DB_NAME=eventix_db
+DB_PORT=3306
+```
+
+### 3. HTTPS Configuration (SSL)
+Secure the web connection using Certbot for free Let's Encrypt certificates:
+*   Configure domain name records to point to your server IP.
+*   Run Certbot on the server:
+    ```bash
+    sudo apt install certbot python3-certbot-apache -y
+    sudo certbot --apache -d yourdomain.me
+    ```
+
+---
+
 ## License
 
 This project was built as part of a university coursework assignment.
+
+

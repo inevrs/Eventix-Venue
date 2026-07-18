@@ -21,7 +21,7 @@ $bookings = mysqli_query($connect, "
     JOIN venues v ON b.venue_id=v.id
     LEFT JOIN payments p ON b.id=p.booking_id
     WHERE v.manager_id=$manager_id
-    ORDER BY b.created_at DESC
+    ORDER BY b.start_date ASC
 ");
 ?>
 <!DOCTYPE html>

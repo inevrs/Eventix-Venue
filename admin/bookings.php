@@ -18,7 +18,7 @@ $bookings = mysqli_query($connect, "
     JOIN users u ON b.user_id = u.id
     JOIN venues v ON b.venue_id = v.id
     LEFT JOIN payments p ON b.id = p.booking_id
-    ORDER BY b.created_at DESC
+    ORDER BY b.start_date ASC
 ");
 ?>
 <!DOCTYPE html>

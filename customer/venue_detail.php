@@ -88,9 +88,19 @@ while ($a = mysqli_fetch_assoc($addons)) $addon_rows[] = $a;
                 <div class="flex items-center gap-2 text-text-muted text-sm mb-2.5">📍 <?= htmlspecialchars($venue['location']) ?></div>
                 <div class="flex items-center gap-2 text-text-muted text-sm mb-2.5">👥 Up to <?= $venue['capacity'] ?> guests</div>
                 <div class="flex items-center gap-2 text-text-muted text-sm mb-2.5">⭐ <?= number_format($venue['avg_rating'],1) ?> / 5 &nbsp;·&nbsp; <?= $venue['review_count'] ?> reviews</div>
-                <p class="text-text text-[15px] leading-relaxed mt-6">
-                    <?= nl2br(htmlspecialchars($venue['description'] ?? '')) ?>
-                </p>
+                <?php $description = trim((string)($venue['description'] ?? '')); ?>
+                <?php if ($description !== ''): ?>
+                    <div class="mt-6 rounded-2xl border border-pink-light bg-pink-50/40 p-5">
+                        <div id="description-wrapper" class="overflow-hidden transition-all duration-300">
+                            <p id="description-text" class="text-text text-[15px] leading-relaxed line-clamp-5">
+                                <?= nl2br(htmlspecialchars($description)) ?>
+                            </p>
+                        </div>
+                        <button type="button" id="toggle-description" class="mt-3 text-sm font-semibold text-pink-main hover:text-pink-dark transition-colors">
+                            Read more
+                        </button>
+                    </div>
+                <?php endif; ?>
             </div>
 
 
@@ -188,6 +198,20 @@ while ($a = mysqli_fetch_assoc($addons)) $addon_rows[] = $a;
 <script>
 window._venuePrice = <?= $venue['price_per_day'] ?>;
 initCarousel(<?= max(count($imgs), 1) ?>);
+
+const descriptionButton = document.getElementById('toggle-description');
+const descriptionText = document.getElementById('description-text');
+const descriptionWrapper = document.getElementById('description-wrapper');
+
+if (descriptionButton && descriptionText) {
+    let expanded = false;
+    descriptionButton.addEventListener('click', () => {
+        expanded = !expanded;
+        descriptionText.classList.toggle('line-clamp-5', !expanded);
+        descriptionButton.textContent = expanded ? 'Show less' : 'Read more';
+        descriptionWrapper.classList.toggle('max-h-[300px]', !expanded);
+    });
+}
 </script>
 
 <?php include '../includes/footer.php'; ?>

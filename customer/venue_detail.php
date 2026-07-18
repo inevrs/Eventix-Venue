@@ -93,23 +93,6 @@ while ($a = mysqli_fetch_assoc($addons)) $addon_rows[] = $a;
                 </p>
             </div>
 
-            <!-- Add-ons -->
-            <div class="mt-12">
-                <h2 class="font-[Playfair_Display] text-2xl text-text font-bold mb-1">Enhance Your Event</h2>
-                <p class="text-text-muted text-sm mb-5">Select any add-ons to include with your booking</p>
-
-                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                    <?php foreach ($addon_rows as $addon): ?>
-                    <div class="addon-card relative border-2 border-pink-light rounded-xl p-4 bg-white cursor-pointer select-none transition-all hover:border-pink-mid hover:-translate-y-1 [&.selected]:border-pink-main [&.selected]:bg-gray-50" id="addon-<?= $addon['id'] ?>" onclick="toggleAddon(<?= $addon['id'] ?>, <?= $addon['price'] ?>, '<?= htmlspecialchars($addon['name']) ?>')">
-                        <div class="check absolute top-2 right-2 w-5 h-5 rounded-full bg-pink-light flex items-center justify-center text-[10px] text-transparent transition-colors [[id=addon-<?= $addon['id'] ?>].selected_&]:bg-pink-main [[id=addon-<?= $addon['id'] ?>].selected_&]:text-white">✓</div>
-                        <div class="text-3xl mb-3"><?= $addon['icon'] ?></div>
-                        <div class="font-semibold text-sm text-text mb-1"><?= htmlspecialchars($addon['name']) ?></div>
-                        <div class="text-xs text-text-muted mb-3 leading-snug"><?= htmlspecialchars($addon['description']) ?></div>
-                        <div class="font-bold text-pink-main text-[15px]">+RM<?= number_format($addon['price'], 0) ?></div>
-                    </div>
-                    <?php endforeach; ?>
-                </div>
-            </div>
 
             <!-- Reviews -->
             <?php if (!empty($review_rows)): ?>
@@ -130,42 +113,74 @@ while ($a = mysqli_fetch_assoc($addons)) $addon_rows[] = $a;
             <?php endif; ?>
         </div>
 
-        <!-- RIGHT: Sticky booking card -->
-        <div class="bg-white border border-gray-100 rounded-2xl  p-7 shadow-soft sticky top-[100px]" data-aos="fade-left">
-            <div class="text-3xl font-bold text-pink-main mb-1">
-                RM<?= number_format($venue['price_per_day'], 2) ?>
-                <span class="text-sm font-normal text-text-muted">/ day</span>
-            </div>
-            <p class="text-sm text-text-muted mb-6">
-                ⭐ <?= number_format($venue['avg_rating'],1) ?> &nbsp;·&nbsp; <?= $venue['review_count'] ?> reviews
-            </p>
-
-            <div class="rounded-xl p-5 mb-6">
-                <div class="flex justify-between text-sm text-text-muted mb-2">
-                    <span>Venue</span>
-                    <span>RM<?= number_format($venue['price_per_day'], 2) ?></span>
+        <!-- RIGHT: Sticky booking card and Add-ons -->
+        <div class="space-y-4 lg:sticky lg:top-[100px] self-start" data-aos="fade-left">
+            <div class="bg-white border border-gray-100 rounded-2xl p-7 shadow-soft">
+                <div class="text-3xl font-bold text-pink-main mb-1">
+                    RM<?= number_format($venue['price_per_day'], 2) ?>
+                    <span class="text-sm font-normal text-text-muted">/ day</span>
                 </div>
-                <div id="addon-summary" class="text-sm text-text-muted space-y-2 mb-3"></div>
-                <div class="flex justify-between text-base font-bold text-text pt-3 border-t border-pink-light">
-                    <span>Total</span>
-                    <span id="grand-total">RM<?= number_format($venue['price_per_day'], 2) ?></span>
+                <p class="text-sm text-text-muted mb-6">
+                    ⭐ <?= number_format($venue['avg_rating'],1) ?> &nbsp;·&nbsp; <?= $venue['review_count'] ?> reviews
+                </p>
+
+                <div class="rounded-xl p-5 mb-6">
+                    <div class="flex justify-between text-sm text-text-muted mb-2">
+                        <span>Venue</span>
+                        <span>RM<?= number_format($venue['price_per_day'], 2) ?></span>
+                    </div>
+                    <div id="addon-summary" class="text-sm text-text-muted space-y-2 mb-3"></div>
+                    <div class="flex justify-between text-base font-bold text-text pt-3 border-t border-pink-light">
+                        <span>Total</span>
+                        <span id="grand-total">RM<?= number_format($venue['price_per_day'], 2) ?></span>
+                    </div>
                 </div>
+
+                <?php if ($role === 'customer'): ?>
+                    <form method="GET" action="book.php">
+                        <input type="hidden" name="id" value="<?= $venue['id'] ?>">
+                        <input type="hidden" name="addons" id="selected-addons-input" value="">
+                        <button type="submit" class="w-full bg-pink-main text-white py-3 rounded-full font-semibold hover:bg-pink-dark transition-colors shadow-md hover:shadow-lg">Book Now →</button>
+                    </form>
+                <?php elseif ($role): ?>
+                    <button type="button" class="w-full bg-transparent border-2 border-pink-light text-pink-main py-3 rounded-full font-semibold opacity-50 cursor-not-allowed">Log in as customer to book</button>
+                <?php else: ?>
+                    <!-- Not logged in, trigger auth modal -->
+                    <button type="button" class="w-full bg-pink-main text-white py-3 rounded-full font-semibold hover:bg-pink-dark transition-colors shadow-md hover:shadow-lg" onclick="openAuthModal(<?= $venue['id'] ?>)">Log in to Book →</button>
+                <?php endif; ?>
+                <p class="text-center text-xs text-text-muted mt-4">You won't be charged yet</p>
             </div>
 
-            <?php if ($role === 'customer'): ?>
-                <form method="GET" action="book.php">
-                    <input type="hidden" name="id" value="<?= $venue['id'] ?>">
-                    <input type="hidden" name="addons" id="selected-addons-input" value="">
-                    <button type="submit" class="w-full bg-pink-main text-white py-3 rounded-full font-semibold hover:bg-pink-dark transition-colors shadow-md hover:shadow-lg">Book Now →</button>
-                </form>
-            <?php elseif ($role): ?>
-                <button type="button" class="w-full bg-transparent border-2 border-pink-light text-pink-main py-3 rounded-full font-semibold opacity-50 cursor-not-allowed">Log in as customer to book</button>
-            <?php else: ?>
-                <!-- Not logged in, trigger auth modal -->
-                <button type="button" class="w-full bg-pink-main text-white py-3 rounded-full font-semibold hover:bg-pink-dark transition-colors shadow-md hover:shadow-lg" onclick="openAuthModal(<?= $venue['id'] ?>)">Log in to Book →</button>
-            <?php endif; ?>
-            <p class="text-center text-xs text-text-muted mt-4">You won't be charged yet</p>
+            <!-- Add-ons Container -->
+            <div class="bg-white border border-gray-100 rounded-2xl p-6 shadow-soft">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h2 class="font-[Playfair_Display] text-xl text-text font-bold">Add-ons</h2>
+                        <p class="text-text-muted text-sm">Enhance your event with these extras</p>
+                    </div>
+                    <span class="text-xs uppercase tracking-widest text-pink-main font-semibold">Optional</span>
+                </div>
+
+                <div class="space-y-3">
+                    <?php foreach ($addon_rows as $addon): ?>
+                    <div class="addon-card border border-pink-light rounded-xl p-4 bg-white cursor-pointer select-none transition-all hover:border-pink-main hover:-translate-y-1 [&.selected]:border-pink-main [&.selected]:bg-gray-50" id="addon-<?= $addon['id'] ?>" onclick="toggleAddon(<?= $addon['id'] ?>, <?= $addon['price'] ?>, '<?= htmlspecialchars($addon['name']) ?>')">
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="text-lg"><?= $addon['icon'] ?></span>
+                                    <div class="font-semibold text-sm text-text"><?= htmlspecialchars($addon['name']) ?></div>
+                                </div>
+                                <div class="text-xs text-text-muted leading-snug"><?= htmlspecialchars($addon['description']) ?></div>
+                            </div>
+                            <div class="text-sm font-bold text-pink-main whitespace-nowrap">+RM<?= number_format($addon['price'], 0) ?></div>
+                        </div>
+                        <div class="check mt-3 flex h-5 w-5 items-center justify-center rounded-full bg-pink-light text-[10px] text-transparent transition-colors [[id=addon-<?= $addon['id'] ?>].selected_&]:bg-pink-main [[id=addon-<?= $addon['id'] ?>].selected_&]:text-white">✓</div>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
         </div>
+
     </div>
 </div>
 

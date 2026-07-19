@@ -83,9 +83,9 @@ $recent = mysqli_query($connect, "
             </div>
         </div>
 
-        <!-- Chart Section for STA116 Integration -->
+        <!-- Chart Section -->
         <div class="bg-white border border-gray-100 rounded-2xl  p-8 shadow-soft mb-8" style="margin-bottom: 24px;">
-            <h2 class="font-[Playfair_Display] text-2xl text-pink-dark mb-6">Bookings per Venue (STA116 Integration)</h2>
+            <h2 class="font-[Playfair_Display] text-2xl text-pink-dark mb-6">Bookings per Venue</h2>
             <p style="color:var(--text-muted);font-size:14px;margin-bottom:16px;">This bar chart represents the frequency of bookings across your different venues.</p>
             <div style="height: 300px;">
                 <canvas id="venueChart"></canvas>

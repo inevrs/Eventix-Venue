@@ -84,9 +84,9 @@ $recent_bookings = mysqli_query($connect, "
             </div>
         </div>
 
-        <!-- Chart Section for STA116 Integration -->
+        <!-- Chart Section -->
         <div class="bg-white border border-gray-100 rounded-2xl  p-8 shadow-soft mb-8" style="margin-bottom: 24px; max-width: 600px;" data-aos="fade-up">
-            <h2 class="font-[Playfair_Display] text-2xl text-pink-dark mb-6">Booking Status Distribution (STA116 Integration)</h2>
+            <h2 class="font-[Playfair_Display] text-2xl text-pink-dark mb-6">Booking Status Distribution</h2>
             <p style="color:var(--text-muted);font-size:14px;margin-bottom:16px;">This chart visualizes the frequency distribution of booking statuses.</p>
             <canvas id="statusChart"></canvas>
         </div>
